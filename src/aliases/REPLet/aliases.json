@@ -1,0 +1,6 @@
+[
+  {
+    "name": "REPLet",
+    "regex": "(?i)^replet$"
+  }
+]

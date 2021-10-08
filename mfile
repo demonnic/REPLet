@@ -1,0 +1,8 @@
+{
+  "package": "REPLet",
+  "version": "1.0.0",
+  "author": "Demonnic",
+  "title": "Lua REPL in a UserWindow or Adjustable.Container",
+  "icon": "computer.png",
+  "outputFile": true
+}
