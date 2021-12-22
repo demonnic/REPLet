@@ -37,7 +37,7 @@ function REPLet.load()
     REPLet.config = table.update(REPLet.config, cfg)
   end
 end
-local orecho, orcecho, ordecho, orhecho = recho, rcecho, rdecho, rhecho
+local orecho, orcecho, ordecho, orhecho, ordisplay = recho, rcecho, rdecho, rhecho, rdisplay
 
 function REPLet.addEchos()
   if not REPLet.config.addEchos then return end
@@ -71,11 +71,15 @@ function REPLet.addEchos()
     REPLet.console:hecho(msg)
     REPLet.console:setFgColor(REPLet.config.fgColor)
   end
+
+  function rdisplay(...)
+    REPLet.console:display(...)
+  end
 end
 
 function REPLet.removeEchos()
   if not REPLet.config.addEchos then return end
-  recho, rcecho, rdecho, rhecho = orecho, orcecho, ordecho, orhecho
+  recho, rcecho, rdecho, rhecho, rdisplay = orecho, orcecho, ordecho, orhecho, ordisplay
 end
 
 function REPLet.error(...)
@@ -129,7 +133,7 @@ function REPLet.usage()
   echo("  * turns on or off autoWrap. example:")
   echo("  * autoWrap true")
   echo("* addEchos <true or false>")
-  echo("  * if true, adds recho, rcecho, rdecho, and rhecho functions to echo to the REPLet console.")
+  echo("  * if true, adds recho, rcecho, rdecho, rhecho, and rdisplay functions to echo to the REPLet console.")
   echo("  * Only available in the console. example:")
   echo("  * addEchos true")
   echo("* usage")

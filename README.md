@@ -5,7 +5,7 @@ It comes with a single alias, `replet`, which opens the REPLet console. From the
 
 Once you have the console open, you can type `usage` within the console for the extra commands which REPLet comes with, in addition to executing code.
 
-By default, adds `recho(msg)`, `rcecho(msg)` etc to allow for easy c/d/h/echoing directly to the console. If this covers over functions you already have and want to use in the console, use `addEchos false` in the REPLet console's command line.
+By default, adds `recho(msg)`, `rcecho(msg)` etc to allow for easy c/d/h/echoing directly to the console. Also adds rdisplay, which works like display() but prints to the REPLet console. If this covers over functions you already have and want to use in the console, use `addEchos false` in the REPLet console's command line.
 
 ## Why REPLet?
 
