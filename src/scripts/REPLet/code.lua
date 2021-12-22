@@ -6,6 +6,8 @@ REPLet.config = REPLet.config or {
   fgColor = "lime_green",
   color = "black",
   cmdColor = "cyan",
+  borderColor = "lime_green",
+  borderThickness = 1,
   addEchos = true,
 }
 
@@ -94,6 +96,8 @@ function REPLet.usage()
   echo("REPLet comes with a few built in commands you can run inside the REPLet console only")
   echo("* clear")
   echo("  * clears the window and prints the intro")
+  echo("* config")
+  echo("  * prints the current REPLet configuration to the REPLet console.")
   echo("* exit")
   echo("  * closes the REPLet window")
   echo("* font <font name>")
@@ -115,6 +119,12 @@ function REPLet.usage()
   echo("* fgColor <color name>")
   echo("  * sets the text color for the output in the REPLet console. example:")
   echo("  * fgColor lime_green")
+  echo("* borderColor <color name>")
+  echo("  * sets the color for the border around the input line. example:")
+  echo("  * borderColor lime_green")
+  echo("* borderThickness <number>")
+  echo("  * thickness of the border around the input line, in pixels. example:")
+  echo("  * borderThickness 1")
   echo("* autoWrap <true or false>")
   echo("  * turns on or off autoWrap. example:")
   echo("  * autoWrap true")
@@ -125,6 +135,23 @@ function REPLet.usage()
   echo("* usage")
   echo("  * prints this message")
   echo(REPLet.prompt)
+end
+
+function REPLet.styleCmdline()
+  local borderThickness = REPLet.config.borderThickness
+  local borderColor = Geyser.Color.hex(REPLet.config.borderColor)
+  local fontSize = REPLet.config.fontSize
+  local font = REPLet.config.font
+  local bgColor = REPLet.config.color
+  local cmdColor = Geyser.Color.hex(REPLet.config.cmdColor)
+  local style = f[[
+    border: {borderThickness}px solid {borderColor};
+    font: {fontSize}pt "{font}";
+    background-color: {bgColor};
+    color: {cmdColor}
+  ]]
+  style = "QPlainTextEdit {" .. style .. "}" -- not included in the f call due to the {}
+  setCmdLineStyleSheet(REPLet.console.name, style)
 end
 
 function REPLet.run(codeString)
@@ -142,12 +169,19 @@ function REPLet.run(codeString)
     return
   end
 
+  if codeString == "config" then
+    REPLet.console:display(REPLet.config)
+    REPLet.console:echo(REPLet.prompt)
+    return
+  end
+
   local fontSize = tonumber(codeString:match("^fontSize (%d+)$"))
   if fontSize then
     REPLet.config.fontSize = fontSize
     REPLet.console:setFontSize(fontSize)
     REPLet.console:echo("Set fontSize to: " .. fontSize .. "\n")
     REPLet.console:echo(REPLet.prompt)
+    REPLet.styleCmdline()
     return
   end
 
@@ -157,6 +191,7 @@ function REPLet.run(codeString)
     REPLet.console:setFont(font)
     REPLet.console:echo("Set font to: " .. font .. "\n")
     REPLet.console:echo(REPLet.prompt)
+    REPLet.styleCmdline()
     return
   end
 
@@ -205,11 +240,30 @@ function REPLet.run(codeString)
     return
   end
 
+  local borderColor = codeString:match("^borderColor (.+)")
+  if borderColor then
+    REPLet.config.borderColor = borderColor
+    REPLet.styleCmdline()
+    REPLet.console:echo("Set borderColor to: " .. borderColor .. "\n")
+    REPLet.console:echo(REPLet.prompt)
+    return
+  end
+
+  local borderThickness = tonumber(codeString:match("^borderThickness (%d+)"))
+  if borderThickness then
+    REPLet.config.borderThickness = borderThickness
+    REPLet.styleCmdline()
+    REPLet.console:echo("Set borderThickness to: " .. borderThickness .. "\n")
+    REPLet.console:echo(REPLet.prompt)
+    return
+  end
+
   local CMDColor = codeString:match("^cmdColor (.+)")
   if CMDColor then
     REPLet.config.cmdColor = CMDColor
     REPLet.console:echo("Set cmdColor to: " .. CMDColor .. "\n")
     REPLet.console:echo(REPLet.prompt)
+    REPLet.styleCmdline()
     return
   end
 
@@ -219,6 +273,7 @@ function REPLet.run(codeString)
     REPLet.console:setColor(color)
     REPLet.console:echo("Set color to: " .. color .. "\n")
     REPLet.console:echo(REPLet.prompt)
+    REPLet.styleCmdline()
     return
   end
 
@@ -297,6 +352,7 @@ function REPLet.init()
   }, REPLet.container)
   REPLet.console:setFgColor(REPLet.config.fgColor)
   REPLet.console:setCmdAction(REPLet.run)
+  REPLet.styleCmdline()
   REPLet.clear()
   REPLet.container:show()
 end
